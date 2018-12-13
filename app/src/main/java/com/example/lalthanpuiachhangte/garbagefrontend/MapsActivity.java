@@ -48,17 +48,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                JSONObject fs = (JSONObject) dataSnapshot.getValue();
                 Log.i("TAG","datasnap: "+fs);
 */
-                Long lat = null;
-                Long lng = null;
+                double lat = 0.0;
+                double lng = 0.0;
 
                 for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                     lat = (Long) messageSnapshot.child("latitude").getValue();
-                     lng = (Long) messageSnapshot.child("longitude").getValue();
+                     lat = (double) messageSnapshot.child("latitude").getValue();
+                     lng = (double) messageSnapshot.child("longitude").getValue();
                     Log.i("TAG","latitude: "+lat + "\nlongitude: "+lng);
 
                 }
 
-                if(lat != null && lng != null )
+                if(lat != 0.0 && lng != 0.0 )
                 setMap(lat,lng);
 
             }
@@ -100,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    public void setMap(long lat1, long lng1) {
+    public void setMap(double lat1, double lng1) {
 
         LatLng sydney = new LatLng(lat1, lng1);
         MarkerOptions a = new MarkerOptions().position(new LatLng(lat1, lng1));
