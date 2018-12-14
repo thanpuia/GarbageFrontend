@@ -29,6 +29,7 @@ import org.json.JSONObject;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    public int NO_OF_TRUCKS = 4;
 
     public DatabaseReference databaseReference;
 
@@ -37,29 +38,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("truck-2/location/");
+          //  databaseReference = FirebaseDatabase.getInstance().getReference("truck-2/location/");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         databaseReference.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    double lat = 0.0;
+                    double lng = 0.0;
+
+                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                    //    lat = (double) messageSnapshot.child("latitude").getValue();
+                   //     lng = (double) messageSnapshot.child("longitude").getValue();
+
+                        Log.i("TAG",""+ messageSnapshot);
+
+                    }
+
+                   // if(lat != 0.0 && lng != 0.0 )
+                   //     setMap(lat,lng);
+                }
+                @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+       /* databaseReference.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            /*    Log.i("TAG","ValueEvent: "+dataSnapshot);
-                Log.i("TAG","Vlongitude: "+dataSnapshot.child("/longitude").getValue());
-                Log.i("TAG","Vlatitude: "+dataSnapshot.child("/latitude").getKey());
-               JSONObject fs = (JSONObject) dataSnapshot.getValue();
-                Log.i("TAG","datasnap: "+fs);
-*/
-                double lat = 0.0;
-                double lng = 0.0;
-
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                     lat = (double) messageSnapshot.child("latitude").getValue();
-                     lng = (double) messageSnapshot.child("longitude").getValue();
-                    Log.i("TAG","latitude: "+lat + "\nlongitude: "+lng);
-
+                    lat = (double) messageSnapshot.child("latitude").getValue();
+                    lng = (double) messageSnapshot.child("longitude").getValue();
                 }
 
-                if(lat != 0.0 && lng != 0.0 )
-                setMap(lat,lng);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
 
@@ -67,7 +91,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
+
+
        /* databaseReference.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
