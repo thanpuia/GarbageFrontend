@@ -38,26 +38,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-          //  databaseReference = FirebaseDatabase.getInstance().getReference("truck-2/location/");
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+            databaseReference = FirebaseDatabase.getInstance().getReference("truck-2/location/");
+       // databaseReference = FirebaseDatabase.getInstance().getReference();
 
         databaseReference.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    double lat = 0.0;
-                    double lng = 0.0;
+                    String lat = "";
+                    String lng = "";
 
                     for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    //    lat = (double) messageSnapshot.child("latitude").getValue();
-                   //     lng = (double) messageSnapshot.child("longitude").getValue();
+                        lat = (String) messageSnapshot.child("latitude").getValue();
+                        lng = (String) messageSnapshot.child("longitude").getValue();
 
                         Log.i("TAG",""+ messageSnapshot);
 
                     }
 
-                   // if(lat != 0.0 && lng != 0.0 )
-                   //     setMap(lat,lng);
+                    if(lat != "" && lng != "" )
+                        setMap(lat,lng);
                 }
                 @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
@@ -69,7 +69,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     lat = (double) messageSnapshot.child("latitude").getValue();
                     lng = (double) messageSnapshot.child("longitude").getValue();
                 }
-
             }
 
             @Override
@@ -92,7 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });*/
-
 
        /* databaseReference.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
@@ -126,8 +124,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    public void setMap(double lat1, double lng1) {
+    public void setMap(String lat, String lng) {
 
+        double lat1 = Double.parseDouble(lat);
+        double lng1 = Double.parseDouble(lng);
         LatLng sydney = new LatLng(lat1, lng1);
         MarkerOptions a = new MarkerOptions().position(new LatLng(lat1, lng1));
         Marker m1 = mMap.addMarker(a);
@@ -143,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
          */
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom
-                (new LatLng(lat1, lng1), 7.0f));
+                (new LatLng(lat1, lng1), 15.5f));
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(sydney));
     }
