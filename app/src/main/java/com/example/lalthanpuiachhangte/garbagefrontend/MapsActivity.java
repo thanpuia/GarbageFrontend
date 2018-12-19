@@ -43,25 +43,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     public int NO_OF_TRUCKS = 4;
-    public Marker marker1, marker2, marker3, marker4;
+    public Marker marker, marker1, marker2, marker3, marker4;
     public LocationManager locationManager;
     public LocationListener locationListener;
     private FusedLocationProviderClient mFusedLocationClient;
 
 
-    public DatabaseReference databaseReference1, databaseReference2, databaseReference3, databaseReference4;
+    public DatabaseReference databaseReference1, databaseReference2, databaseReference3, databaseReference4,databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        marker1 = marker2 = marker3 = marker4 = null;
+        marker = marker1 = marker2 = marker3 = marker4 = null;
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                    Log.i("TAG/root",""+ messageSnapshot.getKey());
+                }
+            }
+            @Override public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
+            @Override public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }});
+
+
         //TRUCK 1
-        /*databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-2/location/");
+        databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-1/location/");
 
         databaseReference1.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
             @Override
@@ -82,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     setMap(lat,lng,truckNum);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });*/
+        });
 
         //TRUCK 2
         databaseReference2 = FirebaseDatabase.getInstance().getReference("truck-2/location/");
@@ -224,15 +241,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom
                                 (sydney, 15f));
 
-                        if (marker1 == null) {
+                        if (marker == null) {
                             MarkerOptions options = new MarkerOptions().position(sydney)
                                     .title("Marker Title")
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));;
-                            marker1 = mMap.addMarker(options);
+                            marker = mMap.addMarker(options);
                         }
                         else {
                             //marker = mMap2.addMarker();
-                            marker1.setPosition(sydney);
+                            marker.setPosition(sydney);
                         }
                         if (location != null)
                             return;
@@ -275,7 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (marker1 == null) {
                     MarkerOptions options = new MarkerOptions().position(sydney1)
                             .title("Marker Title")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                     marker1 = mMap1.addMarker(options);
                 }
                 else {
