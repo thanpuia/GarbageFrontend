@@ -3,11 +3,9 @@ package com.example.lalthanpuiachhangte.garbagefrontend;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -43,31 +41,13 @@ import static android.location.LocationManager.GPS_PROVIDER;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    class Message {
-        private String latitude;
-        private String longitude;
-
-        private Message() {}
-
-        public Message(String latitude, String longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
-        public String getAuthor() {
-            return latitude;
-        }
-
-        public String getText() {
-            return longitude;
-        }
-    }
-
     private GoogleMap mMap;
-
+    public int NO_OF_TRUCKS = 4;
     public Marker marker, marker1, marker2, marker3, marker4;
-
+    public LocationManager locationManager;
+    public LocationListener locationListener;
     private FusedLocationProviderClient mFusedLocationClient;
+
 
     public DatabaseReference databaseReference1, databaseReference2, databaseReference3, databaseReference4,databaseReference;
 
@@ -80,18 +60,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("trucks/");
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.i("TAG/goot",""+ dataSnapshot.getChildrenCount());
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                    Log.i("TAG/root",""+ messageSnapshot.getKey());
+                }
             }
-            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }}
-        );
+            @Override public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
+            @Override public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }});
 
 
-        /*//TRUCK 1
+        //TRUCK 1
         databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-1/location/");
 
         databaseReference1.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
@@ -113,43 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     setMap(lat,lng,truckNum);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });*/
-
-        //TRUCK 1
-        databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-1/location/");
-
-        databaseReference1.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String lat = "";
-                String lng = "";
-
-                lat = (String) dataSnapshot.child("latitude").getValue();
-                lng = (String) dataSnapshot.child("longitude").getValue();
-
-
-                //TESTING
-
-                //   Message m = dataSnapshot.getValue(Message.class);
-
-                //   Log.i("TAG",""+ m);
-              /*  for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    //lat = (String) messageSnapshot.child("latitude").getValue();
-                    lat = (String)messageSnapshot.child("latitude").getValue();
-                    lng = (String) messageSnapshot.child("longitude").getValue();
-
-                    Log.i("TAG",""+ messageSnapshot);
-                }*/
-
-                int truckNum = 1;
-                if(lat != "" && lng != "" )
-                    setMap(lat,lng,truckNum);
-            }
-
-            @Override public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-            @Override public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
-            @Override public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }});
+        });
 
         //TRUCK 2
         databaseReference2 = FirebaseDatabase.getInstance().getReference("truck-2/location/");
@@ -160,7 +110,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 String lat = "";
                 String lng = "";
-
 
                 for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                     lat = (String) messageSnapshot.child("latitude").getValue();
@@ -295,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (marker == null) {
                             MarkerOptions options = new MarkerOptions().position(sydney)
                                     .title("Marker Title")
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));;
                             marker = mMap.addMarker(options);
                         }
                         else {
@@ -335,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case 1:
                 double lat1 = Double.parseDouble(lat);
                 double lng1 = Double.parseDouble(lng);
-                LatLng sydney1 = new LatLng(lat1,lng1);
+                LatLng sydney1 = new LatLng(lat1, lng1);
                 GoogleMap mMap1 = mMap;
           /*      mMap1.moveCamera(CameraUpdateFactory.newLatLng(sydney1));
                 mMap1.animateCamera(CameraUpdateFactory.newLatLngZoom
@@ -422,6 +371,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     marker4.setPosition(sydney4);
                 }
                 break;
+
         }
+
+
+
+
     }
 }
