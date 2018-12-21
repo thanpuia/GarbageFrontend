@@ -91,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         );
 
 
-        /*//TRUCK 1
+        //TRUCK 1
         databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-1/location/");
 
         databaseReference1.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
@@ -113,44 +113,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     setMap(lat,lng,truckNum);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });*/
+        });
 
         //TRUCK 1
-        databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-1/location/");
+        /*databaseReference1 = FirebaseDatabase.getInstance().getReference("truck-1/location/");
 
-        databaseReference1.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
+        databaseReference1.orderByKey().limitToLast(2).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String lat = "";
-                String lng = "";
+                String lat = null;
+                String lng = null;
 
-                lat = (String) dataSnapshot.child("latitude").getValue();
-                lng = (String) dataSnapshot.child("longitude").getValue();
-
+                //lat = (String) dataSnapshot.child("latitude").getValue();
+               // lng = (String) dataSnapshot.child("longitude").getValue();
 
                 //TESTING
 
                 //   Message m = dataSnapshot.getValue(Message.class);
 
                 //   Log.i("TAG",""+ m);
-              /*  for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+               // for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
                     //lat = (String) messageSnapshot.child("latitude").getValue();
-                    lat = (String)messageSnapshot.child("latitude").getValue();
-                    lng = (String) messageSnapshot.child("longitude").getValue();
+                    if(lat == null)
+                        lat = (String)dataSnapshot.child("latitude").getValue();
+                    lat = String.valueOf(dataSnapshot.getChildren());
 
-                    Log.i("TAG",""+ messageSnapshot);
-                }*/
-
-                int truckNum = 1;
-                if(lat != "" && lng != "" )
-                    setMap(lat,lng,truckNum);
-            }
-
-            @Override public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-            @Override public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) { }
-            @Override public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }});
-
+*/
         //TRUCK 2
         databaseReference2 = FirebaseDatabase.getInstance().getReference("truck-2/location/");
 
@@ -160,7 +148,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 String lat = "";
                 String lng = "";
-
 
                 for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                     lat = (String) messageSnapshot.child("latitude").getValue();
@@ -173,7 +160,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (lat != "" && lng != "")
                     setMap(lat, lng, truckNum);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -242,7 +228,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        /* locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -272,7 +259,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager.requestLocationUpdates(GPS_PROVIDER,800,5,locationListener);*/
 
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager
+                .PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
